@@ -54,6 +54,15 @@ void MainWindow::validateUser()
     }
 }
 
+bool MainWindow::validateEmail()
+{
+    QString email = ui->emailLE->text();
+    QString expression = "^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,4})$";
+    QRegularExpression validate(expression);
+
+    return validate.match(email).hasMatch();
+}
+
 
 
 void MainWindow::on_usernameLE_textChanged(const QString &arg1)
@@ -91,18 +100,25 @@ void MainWindow::on_signInPB_clicked()
     QMessageBox message;
     User u;
 
-    u.setName(ui->newUserLE->text());
-    u.setEmail(ui->emailLE->text());
-    u.setPassword(ui->newPasswordLE->text());
+    if(validateEmail()){
+        u.setName(ui->newUserLE->text());
+        u.setEmail(ui->emailLE->text());
+        u.setPassword(ui->newPasswordLE->text());
 
-    users.push_back(u);
+        users.push_back(u);
 
-    message.setText("New user created");
-    message.exec();
+        message.setText("New user created");
+        message.exec();
 
-    ui->newUserLE->clear();
-    ui->emailLE->clear();
-    ui->newPasswordLE->clear();
+        ui->newUserLE->clear();
+        ui->emailLE->clear();
+        ui->newPasswordLE->clear();
+    }else{
+        message.setText("Email is invalid");
+        message.setIcon(QMessageBox::Warning);
+        message.exec();
+        ui->emailLE->clear();
+    }
 }
 
 void MainWindow::on_loginPB_clicked()

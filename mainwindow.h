@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <vector>
 #include "user.h"
+#include <QRegularExpression>
 
 using namespace std;
 
@@ -43,5 +44,6 @@ private:
     void enableLoginPB();
     void enableSignInPB();
     void validateUser();
+    bool validateEmail();
 };
 #endif // MAINWINDOW_H
