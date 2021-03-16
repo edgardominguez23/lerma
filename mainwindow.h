@@ -6,6 +6,12 @@
 #include <vector>
 #include "user.h"
 #include <QRegularExpression>
+#include <QAction>
+#include <QFile>
+#include <QFileDialog>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
 
 using namespace std;
 
@@ -36,14 +42,21 @@ private slots:
 
     void on_loginPB_clicked();
 
+    void openFile();
+
 private:
     Ui::MainWindow *ui;
 
     vector<User> users;
+    QAction* openFileAction;
+    QFile dbFile;
+    QJsonArray dbArray;
 
     void enableLoginPB();
     void enableSignInPB();
     void validateUser();
     bool validateEmail();
+    void saveDB();
+    void loadBD();
 };
 #endif // MAINWINDOW_H

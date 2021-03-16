@@ -6,10 +6,15 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    openFileAction = new QAction("&Open Database", this);
+    connect(openFileAction, SIGNAL(triggered()), this, SLOT(openFile()));
+    ui->menubar->addMenu("&File")->addAction(openFileAction);
 }
 
 MainWindow::~MainWindow()
 {
+    saveDB();
     delete ui;
 }
 
@@ -63,6 +68,44 @@ bool MainWindow::validateEmail()
     return validate.match(email).hasMatch();
 }
 
+void MainWindow::saveDB()
+{
+    QJsonObject jsonObj;
+    QJsonDocument jsonDoc;
+
+    jsonObj["users"] = dbArray;
+    jsonDoc = QJsonDocument(jsonObj);
+
+    dbFile.open(QIODevice::WriteOnly);
+    dbFile.write(jsonDoc.toJson());
+    dbFile.close();
+}
+
+void MainWindow::loadBD()
+{
+    QJsonObject jsonObj;
+    QJsonDocument jsonDoc;
+    QByteArray data;
+
+    dbFile.open(QIODevice::ReadOnly);
+    data = dbFile.readAll();
+    dbFile.close();
+
+    jsonDoc = QJsonDocument::fromJson(data);
+    jsonObj = jsonDoc.object();
+    dbArray = jsonObj["users"].toArray();
+
+    for (int i(0); i < dbArray.size(); ++i) {
+        User u;
+        QJsonObject obj = dbArray[i].toObject();
+        u.setName(obj["name"].toString());
+        u.setEmail(obj["email"].toString());
+        u.setPassword(obj["password"].toString());
+
+        users.push_back(u);
+    }
+}
+
 
 
 void MainWindow::on_usernameLE_textChanged(const QString &arg1)
@@ -99,6 +142,7 @@ void MainWindow::on_signInPB_clicked()
 {
     QMessageBox message;
     User u;
+    QJsonObject jsonOBJ;
 
     if(validateEmail()){
         u.setName(ui->newUserLE->text());
@@ -113,6 +157,12 @@ void MainWindow::on_signInPB_clicked()
         ui->newUserLE->clear();
         ui->emailLE->clear();
         ui->newPasswordLE->clear();
+
+
+        jsonOBJ["name"] = u.getName();
+        jsonOBJ["email"] = u.getEmail();
+        jsonOBJ["password"] = u.getPassword();
+        dbArray.append(jsonOBJ);
     }else{
         message.setText("Email is invalid");
         message.setIcon(QMessageBox::Warning);
@@ -126,4 +176,19 @@ void MainWindow::on_loginPB_clicked()
     validateUser();
     ui->usernameLE->clear();
     ui->passwordLE->clear();
+}
+
+void MainWindow::openFile()
+{
+    QString name;
+    name = QFileDialog::getOpenFileName(this,
+                                        "Select Database",
+                                        "",
+                                        "JSON files (*.json)");
+    if(name.length() > 0){
+        dbFile.setFileName(name);
+        ui->loginGB->setEnabled(true);
+        ui->signInGB->setEnabled(true);
+        loadBD();
+    }
 }
