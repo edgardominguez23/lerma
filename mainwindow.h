@@ -56,6 +56,7 @@ private:
     void enableSignInPB();
     void validateUser();
     bool validateEmail();
+    bool validateCredential();
     void saveDB();
     void loadBD();
 };

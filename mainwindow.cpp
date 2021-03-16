@@ -68,6 +68,27 @@ bool MainWindow::validateEmail()
     return validate.match(email).hasMatch();
 }
 
+bool MainWindow::validateCredential()
+{
+    QMessageBox message;
+    vector<User>::iterator it;
+    QString user = ui->newUserLE->text();
+    QString email = ui->emailLE->text();
+
+    it = find_if(users.begin(), users.end(), [&user](User u) -> bool{return u.getName() == user;});
+
+    if(it == users.end()){
+        it = find_if(users.begin(), users.end(), [&email](User u) -> bool{return u.getEmail() == email;});
+        if(it == users.end()){
+            return true;
+        }else{
+            return false;
+        }
+    }else{
+        return false;
+    }
+}
+
 void MainWindow::saveDB()
 {
     QJsonObject jsonObj;
@@ -140,11 +161,14 @@ void MainWindow::on_newPasswordLE_textChanged(const QString &arg1)
 
 void MainWindow::on_signInPB_clicked()
 {
-    QMessageBox message;
-    User u;
-    QJsonObject jsonOBJ;
+    QMessageBox messageNew, message;
+    bool validateUE = validateCredential();
+    bool validateE = validateEmail();
 
-    if(validateEmail()){
+    if(validateE && validateUE){
+        User u;
+        QJsonObject jsonOBJ;
+
         u.setName(ui->newUserLE->text());
         u.setEmail(ui->emailLE->text());
         u.setPassword(ui->newPasswordLE->text());
@@ -158,16 +182,26 @@ void MainWindow::on_signInPB_clicked()
         ui->emailLE->clear();
         ui->newPasswordLE->clear();
 
-
         jsonOBJ["name"] = u.getName();
         jsonOBJ["email"] = u.getEmail();
         jsonOBJ["password"] = u.getPassword();
         dbArray.append(jsonOBJ);
-    }else{
-        message.setText("Email is invalid");
-        message.setIcon(QMessageBox::Warning);
-        message.exec();
-        ui->emailLE->clear();
+    }
+    else{
+        if(validateE == false){
+            messageNew.setText("Invalid email");
+            messageNew.setIcon(QMessageBox::Warning);
+            messageNew.exec();
+            ui->emailLE->clear();
+        }else{
+            if(validateUE == false){
+                messageNew.setText("Username or email is already registered, write another");
+                messageNew.setIcon(QMessageBox::Warning);
+                messageNew.exec();
+                ui->newUserLE->clear();
+                ui->emailLE->clear();
+            }
+        }
     }
 }
 
