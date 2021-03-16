@@ -42,5 +42,6 @@ private:
 
     void enableLoginPB();
     void enableSignInPB();
+    void validateUser();
 };
 #endif // MAINWINDOW_H

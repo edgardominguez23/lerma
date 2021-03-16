@@ -31,6 +31,29 @@ void MainWindow::enableSignInPB()
     }
 }
 
+void MainWindow::validateUser()
+{
+    QMessageBox message;
+    vector<User>::iterator it;
+    QString user = ui->usernameLE->text();
+    QString password = ui->passwordLE->text();
+
+    it = find_if(users.begin(), users.end(), [&user, &password](User u) -> bool{
+        return u.getName() == user && u.getPassword() == password;
+    }
+    );
+
+    if(it == users.end()){
+        message.setText("Invalid credentials");
+        message.setIcon(QMessageBox::Warning);
+        message.exec();
+    }else{
+        message.setText("Welcome to LERMA " + user);
+        ui->viewSW->setCurrentIndex(1);
+        message.exec();
+    }
+}
+
 
 
 void MainWindow::on_usernameLE_textChanged(const QString &arg1)
@@ -65,10 +88,26 @@ void MainWindow::on_newPasswordLE_textChanged(const QString &arg1)
 
 void MainWindow::on_signInPB_clicked()
 {
+    QMessageBox message;
+    User u;
 
+    u.setName(ui->newUserLE->text());
+    u.setEmail(ui->emailLE->text());
+    u.setPassword(ui->newPasswordLE->text());
+
+    users.push_back(u);
+
+    message.setText("New user created");
+    message.exec();
+
+    ui->newUserLE->clear();
+    ui->emailLE->clear();
+    ui->newPasswordLE->clear();
 }
 
 void MainWindow::on_loginPB_clicked()
 {
-
+    validateUser();
+    ui->usernameLE->clear();
+    ui->passwordLE->clear();
 }
