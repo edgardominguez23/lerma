@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -16,6 +17,7 @@ MainWindow::~MainWindow()
 {
     saveDB();
     delete ui;
+    delete uiProducts;
 }
 
 void MainWindow::enableLoginPB()
@@ -54,7 +56,10 @@ void MainWindow::validateUser()
         message.exec();
     }else{
         message.setText("Welcome to LERMA " + user);
-        ui->viewSW->setCurrentIndex(1);
+        uiProducts = new ProductWidget();
+        //ui->viewSW->setCurrentIndex(1);
+        ui->viewSW->addWidget(uiProducts);
+        ui->viewSW->setCurrentIndex(2);
         message.exec();
     }
 }

@@ -11,16 +11,22 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    productwidget.cpp \
     user.cpp
 
 HEADERS += \
     mainwindow.h \
+    productwidget.h \
     user.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    productwidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    resources.qrc

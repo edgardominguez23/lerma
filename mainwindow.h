@@ -13,6 +13,8 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 
+#include "productwidget.h"
+
 using namespace std;
 
 QT_BEGIN_NAMESPACE
@@ -46,6 +48,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    ProductWidget *uiProducts;
 
     vector<User> users;
     QAction* openFileAction;
