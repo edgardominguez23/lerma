@@ -7,7 +7,11 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
-
+#include <QGridLayout>
+#include <QPushButton>
+#include <QDebug>
+#include <QWidget>
+#include <QLabel>
 
 using namespace std;
 

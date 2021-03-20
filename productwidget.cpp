@@ -1,8 +1,6 @@
 #include "productwidget.h"
 #include "ui_productwidget.h"
-#include <QGridLayout>
-#include <QPushButton>
-#include <QDebug>
+#include <QPixmap>
 
 ProductWidget::ProductWidget(QString name, QWidget *parent) :
     QWidget(parent),
@@ -38,7 +36,7 @@ void ProductWidget::setNameFile(const QString &value)
 
 void ProductWidget::loadAllDepartmets()
 {
-    QJsonObject jsonObj;
+    /*QJsonObject jsonObj;
     QJsonDocument jsonDoc;
     QByteArray data;
 
@@ -57,14 +55,28 @@ void ProductWidget::loadAllDepartmets()
         qDebug() << obj["id"].toString();
         qDebug() << obj["name"].toString();
         qDebug() << obj["price"].toDouble();
-    }
+    }*/
     /////////////////////////////////////////////////////////////////////////////////////
     QGridLayout *contGL = new QGridLayout(this);
     for (int i = 0;i < 5 ;i++) {
-        for (int j = 0;j < 3 ; j++) {
-            QPushButton *btn = new QPushButton("Hello, how are you");
+        for (int j = 0;j < 4 ; j++) {
+            //QPushButton *btn = new QPushButton("Hello, how are you");
 
-            contGL->addWidget(btn,i,j);
+            QLabel *img = new QLabel();
+            QLabel *id = new QLabel();
+            QLabel *name = new QLabel();
+            QLabel *price = new QLabel();
+            QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/AB02.jpg");
+            img->setPixmap(pix.scaled(100,100,Qt::KeepAspectRatio));
+            id->setText("Id 1900");
+            name->setText("Food");
+            price->setText("Es 1900");
+
+
+            contGL->addWidget(img,i*4,j,Qt::AlignCenter);
+            contGL->addWidget(id,(i*4)+1,j,Qt::AlignCenter);
+            contGL->addWidget(name,(i*4)+2,j,Qt::AlignCenter);
+            contGL->addWidget(price,(i*4)+3,j,Qt::AlignCenter);
         }
     }
     ui->scrollContents->setLayout(contGL);
