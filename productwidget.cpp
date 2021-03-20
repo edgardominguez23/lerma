@@ -16,6 +16,7 @@ ProductWidget::ProductWidget(QString name, QWidget *parent) :
     ui->optionCB->addItem("Hogar y Cocina");
     ui->optionCB->addItem("Deporte y Aire Libre");
 
+    loadAllObjects();
     loadAllDepartmets();
 }
 
@@ -36,7 +37,42 @@ void ProductWidget::setNameFile(const QString &value)
 
 void ProductWidget::loadAllDepartmets()
 {
-    /*QJsonObject jsonObj;
+    QGridLayout *contGL = new QGridLayout(this);
+    int cont = 0;
+    bool bandera = true;
+
+    for (int i = 0;i < (dbArrayObjects.size() / 4) ;i++) {
+        for (int j = 0;j < 4 ; j++) {
+            if(cont > dbArrayObjects.size() - 1) bandera  = false;
+
+            if(bandera){
+                QJsonObject obj = dbArrayObjects[cont].toObject();
+
+                QLabel *img = new QLabel();
+                //QLabel *id = new QLabel();
+                QLabel *name = new QLabel();
+                QLabel *price = new QLabel();
+                QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+obj["id"].toString()+".jpg");
+                img->setPixmap(pix.scaled(100,100,Qt::KeepAspectRatio));
+                //id->setText(obj["id"].toString());
+                name->setText(obj["name"].toString());
+                price->setText(QString::number(obj["price"].toDouble()));
+
+                contGL->addWidget(img,i*4,j,Qt::AlignCenter);
+                contGL->addWidget(name,(i*4)+1,j,Qt::AlignCenter);
+                contGL->addWidget(price,(i*4)+2,j,Qt::AlignCenter);
+
+                cont++;
+            }
+        }
+        if(!bandera) break;
+    }
+    ui->scrollContents->setLayout(contGL);
+}
+
+void ProductWidget::loadAllObjects()
+{
+    QJsonObject jsonObj;
     QJsonDocument jsonDoc;
     QByteArray data;
 
@@ -49,37 +85,6 @@ void ProductWidget::loadAllDepartmets()
     jsonDoc = QJsonDocument::fromJson(data);
     jsonObj = jsonDoc.object();
     dbArrayObjects = jsonObj["products"].toArray();
-
-    for (int i(0); i < dbArrayObjects.size(); ++i) {
-        QJsonObject obj = dbArrayObjects[i].toObject();
-        qDebug() << obj["id"].toString();
-        qDebug() << obj["name"].toString();
-        qDebug() << obj["price"].toDouble();
-    }*/
-    /////////////////////////////////////////////////////////////////////////////////////
-    QGridLayout *contGL = new QGridLayout(this);
-    for (int i = 0;i < 5 ;i++) {
-        for (int j = 0;j < 4 ; j++) {
-            //QPushButton *btn = new QPushButton("Hello, how are you");
-
-            QLabel *img = new QLabel();
-            QLabel *id = new QLabel();
-            QLabel *name = new QLabel();
-            QLabel *price = new QLabel();
-            QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/AB02.jpg");
-            img->setPixmap(pix.scaled(100,100,Qt::KeepAspectRatio));
-            id->setText("Id 1900");
-            name->setText("Food");
-            price->setText("Es 1900");
-
-
-            contGL->addWidget(img,i*4,j,Qt::AlignCenter);
-            contGL->addWidget(id,(i*4)+1,j,Qt::AlignCenter);
-            contGL->addWidget(name,(i*4)+2,j,Qt::AlignCenter);
-            contGL->addWidget(price,(i*4)+3,j,Qt::AlignCenter);
-        }
-    }
-    ui->scrollContents->setLayout(contGL);
 }
 
 

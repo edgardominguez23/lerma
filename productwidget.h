@@ -38,6 +38,7 @@ private:
     QJsonArray dbArrayObjects;
 
     void loadAllDepartmets();
+    void loadAllObjects();
 };
 
 #endif // PRODUCTWIDGET_H
