@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 
+QString nameFile;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -17,7 +19,7 @@ MainWindow::~MainWindow()
 {
     saveDB();
     delete ui;
-    delete uiProducts;
+    delete uiProduct;
 }
 
 void MainWindow::enableLoginPB()
@@ -55,11 +57,14 @@ void MainWindow::validateUser()
         message.setIcon(QMessageBox::Warning);
         message.exec();
     }else{
+        qDebug() << "Nombre" + nameFile;
         message.setText("Welcome to LERMA " + user);
-        uiProducts = new ProductWidget();
-        //ui->viewSW->setCurrentIndex(1);
-        ui->viewSW->addWidget(uiProducts);
+        uiProduct = new ProductWidget(nameFile);
+
+        ui->viewSW->addWidget(uiProduct);
+        uiProduct->setNameFile(nameFile);
         ui->viewSW->setCurrentIndex(2);
+
         message.exec();
     }
 }
@@ -100,6 +105,7 @@ void MainWindow::saveDB()
     QJsonDocument jsonDoc;
 
     jsonObj["users"] = dbArray;
+    jsonObj["products"] = dbArrayObject;
     jsonDoc = QJsonDocument(jsonObj);
 
     dbFile.open(QIODevice::WriteOnly);
@@ -120,6 +126,7 @@ void MainWindow::loadBD()
     jsonDoc = QJsonDocument::fromJson(data);
     jsonObj = jsonDoc.object();
     dbArray = jsonObj["users"].toArray();
+    dbArrayObject = jsonObj["products"].toArray();
 
     for (int i(0); i < dbArray.size(); ++i) {
         User u;
@@ -228,6 +235,7 @@ void MainWindow::openFile()
         dbFile.setFileName(name);
         ui->loginGB->setEnabled(true);
         ui->signInGB->setEnabled(true);
+        nameFile = name;
         loadBD();
     }
 }

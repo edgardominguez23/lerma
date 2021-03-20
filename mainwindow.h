@@ -49,12 +49,13 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    ProductWidget *uiProducts;
+    //ProductWidget *uiProducts;
+    ProductWidget *uiProduct;
 
     vector<User> users;
     QAction* openFileAction;
     QFile dbFile;
-    QJsonArray dbArray;
+    QJsonArray dbArray, dbArrayObject;
 
     void enableLoginPB();
     void enableSignInPB();
