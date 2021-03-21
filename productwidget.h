@@ -30,6 +30,9 @@ public:
     QString getNameFile() const;
     void setNameFile(const QString &value);
 
+private slots:
+    void on_optionCB_currentIndexChanged(int index);
+
 private:
     Ui::ProductWidget *ui;
 
@@ -39,6 +42,7 @@ private:
 
     void loadAllDepartmets();
     void loadAllObjects();
+    void loadObjectsDepartament(QString id);
 };
 
 #endif // PRODUCTWIDGET_H

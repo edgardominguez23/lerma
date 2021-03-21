@@ -17,7 +17,7 @@ ProductWidget::ProductWidget(QString name, QWidget *parent) :
     ui->optionCB->addItem("Deporte y Aire Libre");
 
     loadAllObjects();
-    loadAllDepartmets();
+    //loadAllDepartmets();
 }
 
 ProductWidget::~ProductWidget()
@@ -41,7 +41,7 @@ void ProductWidget::loadAllDepartmets()
     int cont = 0;
     bool bandera = true;
 
-    for (int i = 0;i < (dbArrayObjects.size() / 4) ;i++) {
+    for (int i = 0;i <= dbArrayObjects.size() / 4 ;i++) {
         for (int j = 0;j < 4 ; j++) {
             if(cont > dbArrayObjects.size() - 1) bandera  = false;
 
@@ -49,13 +49,14 @@ void ProductWidget::loadAllDepartmets()
                 QJsonObject obj = dbArrayObjects[cont].toObject();
 
                 QLabel *img = new QLabel();
-                //QLabel *id = new QLabel();
                 QLabel *name = new QLabel();
-                QLabel *price = new QLabel();
+                QLabel *price = new QLabel();                
                 QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+obj["id"].toString()+".jpg");
-                img->setPixmap(pix.scaled(100,100,Qt::KeepAspectRatio));
-                //id->setText(obj["id"].toString());
+
+                img->setPixmap(pix.scaled(200,200,Qt::KeepAspectRatio));
                 name->setText(obj["name"].toString());
+                //name->setFixedWidth(167772);
+                //name->setStyleSheet("max-width:10.5em; display:block;");
                 price->setText(QString::number(obj["price"].toDouble()));
 
                 contGL->addWidget(img,i*4,j,Qt::AlignCenter);
@@ -87,4 +88,61 @@ void ProductWidget::loadAllObjects()
     dbArrayObjects = jsonObj["products"].toArray();
 }
 
+void ProductWidget::loadObjectsDepartament(QString id)
+{
+    QGridLayout *contGL = new QGridLayout(this);
+    int cont = 0;
+    bool bandera = true;
 
+    for (int i = 0;i <= dbArrayObjects.size() / 4 ;i++) {
+        for (int j = 0;j < 4 ; j++) {
+            if(cont > dbArrayObjects.size() - 1) bandera  = false;
+            QJsonObject obj = dbArrayObjects[cont].toObject();
+
+            QString x = obj["id"].toString();
+            qDebug() << x.indexOf(id);
+
+
+            if(bandera){
+
+                QLabel *img = new QLabel();
+                QLabel *name = new QLabel();
+                QLabel *price = new QLabel();
+                QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+obj["id"].toString()+".jpg");
+
+                img->setPixmap(pix.scaled(200,200,Qt::KeepAspectRatio));
+                name->setText(obj["name"].toString());
+                //name->setFixedWidth(167772);
+                //name->setStyleSheet("max-width:10.5em; display:block;");
+                price->setText(QString::number(obj["price"].toDouble()));
+
+                contGL->addWidget(img,i*4,j,Qt::AlignCenter);
+                contGL->addWidget(name,(i*4)+1,j,Qt::AlignCenter);
+                contGL->addWidget(price,(i*4)+2,j,Qt::AlignCenter);
+
+                cont++;
+            }
+        }
+        if(!bandera) break;
+    }
+    ui->scrollContents->setLayout(contGL);
+}
+
+
+
+void ProductWidget::on_optionCB_currentIndexChanged(int index)
+{
+    if(index == 0){
+        loadAllDepartmets();
+    }else if(index == 1){
+        loadObjectsDepartament("AB");
+    }else if(index == 2){
+        loadObjectsDepartament("L");
+    }else if(index == 3){
+        loadObjectsDepartament("E");
+    }else if(index == 4){
+        loadObjectsDepartament("HC");
+    }else{
+        loadObjectsDepartament("D");
+    }
+}
