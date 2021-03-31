@@ -1,6 +1,9 @@
 #include "productwidget.h"
 #include "ui_productwidget.h"
 #include <QPixmap>
+///////////////////////Prueba
+#include <QPushButton>
+#include <QVBoxLayout>
 
 ProductWidget::ProductWidget(QString name, QWidget *parent) :
     QWidget(parent),
@@ -128,21 +131,49 @@ void ProductWidget::loadObjectsDepartament(QString id)
     ui->scrollContents->setLayout(contGL);
 }
 
+void ProductWidget::cargarBotones(int index){
+    QVBoxLayout *lay = new QVBoxLayout(this);
+    for(int i(0); i < index + 1; i++){
+        QPushButton *b = new QPushButton("Hello world");
+        lay->addWidget(b);
+    }
+    ui->scrollContents->setLayout(lay);
+}
+
+void ProductWidget::deleteBotones()
+{
+    if(ui->scrollContents->layout() != NULL){
+        QLayoutItem* item;
+        while((item = ui->scrollContents->layout()->takeAt(0)) != NULL){
+            delete item->widget();
+            delete item;
+        }
+        delete ui->scrollContents->layout();
+    }
+}
+
 
 
 void ProductWidget::on_optionCB_currentIndexChanged(int index)
 {
     if(index == 0){
-        loadAllDepartmets();
+        //loadAllDepartmets();
+        cargarBotones(index);
     }else if(index == 1){
-        loadObjectsDepartament("AB");
+        //loadObjectsDepartament("AB");
+        //cargarBotones(index);
+        deleteBotones();
     }else if(index == 2){
-        loadObjectsDepartament("L");
+        //loadObjectsDepartament("L");
+        cargarBotones(index);
     }else if(index == 3){
-        loadObjectsDepartament("E");
+        //loadObjectsDepartament("E");
+        cargarBotones(index);
     }else if(index == 4){
-        loadObjectsDepartament("HC");
+        //loadObjectsDepartament("HC");
+        cargarBotones(index);
     }else{
-        loadObjectsDepartament("D");
+        //loadObjectsDepartament("D");
+        cargarBotones(index);
     }
 }

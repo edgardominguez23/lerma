@@ -43,6 +43,9 @@ private:
     void loadAllDepartmets();
     void loadAllObjects();
     void loadObjectsDepartament(QString id);
+    ////Prueba
+    void cargarBotones(int index);
+    void deleteBotones();
 };
 
 #endif // PRODUCTWIDGET_H
