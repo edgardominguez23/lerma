@@ -1,9 +1,8 @@
 #include "productwidget.h"
 #include "ui_productwidget.h"
 #include <QPixmap>
-///////////////////////Prueba
-#include <QPushButton>
-#include <QVBoxLayout>
+
+bool firstActivation = false;
 
 ProductWidget::ProductWidget(QString name, QWidget *parent) :
     QWidget(parent),
@@ -20,11 +19,12 @@ ProductWidget::ProductWidget(QString name, QWidget *parent) :
     ui->optionCB->addItem("Deporte y Aire Libre");
 
     loadAllObjects();
-    //loadAllDepartmets();
+    loadObjectsDepartament(0);
 }
 
 ProductWidget::~ProductWidget()
 {
+    deleteWidgets();
     delete ui;
 }
 
@@ -38,49 +38,13 @@ void ProductWidget::setNameFile(const QString &value)
     nameFile = value;
 }
 
-void ProductWidget::loadAllDepartmets()
-{
-    QGridLayout *contGL = new QGridLayout(this);
-    int cont = 0;
-    bool bandera = true;
-
-    for (int i = 0;i <= dbArrayObjects.size() / 4 ;i++) {
-        for (int j = 0;j < 4 ; j++) {
-            if(cont > dbArrayObjects.size() - 1) bandera  = false;
-
-            if(bandera){
-                QJsonObject obj = dbArrayObjects[cont].toObject();
-
-                QLabel *img = new QLabel();
-                QLabel *name = new QLabel();
-                QLabel *price = new QLabel();                
-                QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+obj["id"].toString()+".jpg");
-
-                img->setPixmap(pix.scaled(200,200,Qt::KeepAspectRatio));
-                name->setText(obj["name"].toString());
-                //name->setFixedWidth(167772);
-                //name->setStyleSheet("max-width:10.5em; display:block;");
-                price->setText(QString::number(obj["price"].toDouble()));
-
-                contGL->addWidget(img,i*4,j,Qt::AlignCenter);
-                contGL->addWidget(name,(i*4)+1,j,Qt::AlignCenter);
-                contGL->addWidget(price,(i*4)+2,j,Qt::AlignCenter);
-
-                cont++;
-            }
-        }
-        if(!bandera) break;
-    }
-    ui->scrollContents->setLayout(contGL);
-}
-
 void ProductWidget::loadAllObjects()
 {
     QJsonObject jsonObj;
     QJsonDocument jsonDoc;
     QByteArray data;
 
-    dbFile.setFileName(nameFile);
+    dbFile.setFileName(getNameFile());
 
     dbFile.open(QIODevice::ReadOnly);
     data = dbFile.readAll();
@@ -91,56 +55,38 @@ void ProductWidget::loadAllObjects()
     dbArrayObjects = jsonObj["products"].toArray();
 }
 
-void ProductWidget::loadObjectsDepartament(QString id)
+void ProductWidget::loadObjectsDepartament(int departmentNumber)
 {
     QGridLayout *contGL = new QGridLayout(this);
-    int cont = 0;
-    bool bandera = true;
+    int cont = (departmentNumber > 0) ? (departmentNumber-1)*10 : 0;
+    int departmentSize = (departmentNumber > 0) ? departmentNumber*10 : dbArrayObjects.size();
 
-    for (int i = 0;i <= dbArrayObjects.size() / 4 ;i++) {
+    for (int i = 0;i <= departmentSize / 4 ;i++) {
         for (int j = 0;j < 4 ; j++) {
-            if(cont > dbArrayObjects.size() - 1) bandera  = false;
+            if(cont >= departmentSize) break;
+
             QJsonObject obj = dbArrayObjects[cont].toObject();
 
-            QString x = obj["id"].toString();
-            qDebug() << x.indexOf(id);
+            QLabel *img = new QLabel();
+            QLabel *name = new QLabel();
+            QLabel *price = new QLabel();
+            QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+obj["id"].toString()+".jpg");
 
+            img->setPixmap(pix.scaled(200,200,Qt::KeepAspectRatio));
+            name->setText(obj["name"].toString());
+            price->setText(QString::number(obj["price"].toDouble()));
 
-            if(bandera){
+            contGL->addWidget(img,i*4,j,Qt::AlignCenter);
+            contGL->addWidget(name,(i*4)+1,j,Qt::AlignCenter);
+            contGL->addWidget(price,(i*4)+2,j,Qt::AlignCenter);
 
-                QLabel *img = new QLabel();
-                QLabel *name = new QLabel();
-                QLabel *price = new QLabel();
-                QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+obj["id"].toString()+".jpg");
-
-                img->setPixmap(pix.scaled(200,200,Qt::KeepAspectRatio));
-                name->setText(obj["name"].toString());
-                //name->setFixedWidth(167772);
-                //name->setStyleSheet("max-width:10.5em; display:block;");
-                price->setText(QString::number(obj["price"].toDouble()));
-
-                contGL->addWidget(img,i*4,j,Qt::AlignCenter);
-                contGL->addWidget(name,(i*4)+1,j,Qt::AlignCenter);
-                contGL->addWidget(price,(i*4)+2,j,Qt::AlignCenter);
-
-                cont++;
-            }
+            cont++;
         }
-        if(!bandera) break;
     }
     ui->scrollContents->setLayout(contGL);
 }
 
-void ProductWidget::cargarBotones(int index){
-    QVBoxLayout *lay = new QVBoxLayout(this);
-    for(int i(0); i < index + 1; i++){
-        QPushButton *b = new QPushButton("Hello world");
-        lay->addWidget(b);
-    }
-    ui->scrollContents->setLayout(lay);
-}
-
-void ProductWidget::deleteBotones()
+void ProductWidget::deleteWidgets()
 {
     if(ui->scrollContents->layout() != NULL){
         QLayoutItem* item;
@@ -152,28 +98,11 @@ void ProductWidget::deleteBotones()
     }
 }
 
-
-
 void ProductWidget::on_optionCB_currentIndexChanged(int index)
 {
-    if(index == 0){
-        //loadAllDepartmets();
-        cargarBotones(index);
-    }else if(index == 1){
-        //loadObjectsDepartament("AB");
-        //cargarBotones(index);
-        deleteBotones();
-    }else if(index == 2){
-        //loadObjectsDepartament("L");
-        cargarBotones(index);
-    }else if(index == 3){
-        //loadObjectsDepartament("E");
-        cargarBotones(index);
-    }else if(index == 4){
-        //loadObjectsDepartament("HC");
-        cargarBotones(index);
-    }else{
-        //loadObjectsDepartament("D");
-        cargarBotones(index);
+    if (firstActivation){
+        deleteWidgets();
+        loadObjectsDepartament(index);
     }
+    firstActivation = true;
 }

@@ -139,8 +139,6 @@ void MainWindow::loadBD()
     }
 }
 
-
-
 void MainWindow::on_usernameLE_textChanged(const QString &arg1)
 {
     Q_UNUSED(arg1);

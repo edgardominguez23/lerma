@@ -40,12 +40,9 @@ private:
     QString nameFile;
     QJsonArray dbArrayObjects;
 
-    void loadAllDepartmets();
     void loadAllObjects();
-    void loadObjectsDepartament(QString id);
-    ////Prueba
-    void cargarBotones(int index);
-    void deleteBotones();
+    void loadObjectsDepartament(int departmentNumber);
+    void deleteWidgets();
 };
 
 #endif // PRODUCTWIDGET_H
