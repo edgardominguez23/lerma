@@ -42,6 +42,7 @@ private:
 
     void loadAllObjects();
     void loadObjectsDepartament(int departmentNumber);
+    void loadObjectsByDepartment(int departmentNumber);
     void deleteWidgets();
 };
 
