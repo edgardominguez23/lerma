@@ -11,11 +11,13 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    product.cpp \
     productwidget.cpp \
     user.cpp
 
 HEADERS += \
     mainwindow.h \
+    product.h \
     productwidget.h \
     user.h
 

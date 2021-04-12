@@ -2,6 +2,7 @@
 #include "ui_productwidget.h"
 #include <QPixmap>
 #include <QVBoxLayout>
+#include <algorithm>
 
 bool firstActivation = false;
 
@@ -12,15 +13,8 @@ ProductWidget::ProductWidget(QString name, QWidget *parent) :
     ui->setupUi(this);
 
     nameFile = name;
-    ui->optionCB->addItem("Todos los departamentos");
-    ui->optionCB->addItem("Alimentos y Bebidas");
-    ui->optionCB->addItem("Libros");
-    ui->optionCB->addItem("Electronicos");
-    ui->optionCB->addItem("Hogar y Cocina");
-    ui->optionCB->addItem("Deporte y Aire Libre");
 
     loadAllObjects();
-    //loadObjectsDepartament(0);
     loadObjectsByDepartment(0);
 }
 
@@ -95,6 +89,8 @@ void ProductWidget::loadObjectsByDepartment(int departmentNumber)
     QGridLayout *contGL = new QGridLayout(this);
     int cont = (departmentNumber > 0) ? (departmentNumber-1)*10 : 0;
     int departmentSize = (departmentNumber > 0) ? departmentNumber*10 : dbArrayObjects.size();
+    ui->sortCB->setCurrentIndex(0);
+    ui->searchLE->clear();
 
     for (int i(0);i <= departmentSize / 4 ;i++ ) {
         for(int j(0); j < 4; j++){
@@ -131,6 +127,70 @@ void ProductWidget::loadObjectsByDepartment(int departmentNumber)
     ui->scrollContents->setLayout(contGL);
 }
 
+void ProductWidget::loadObjectsBySort(int sortNumber)
+{
+    QGridLayout *contGL = new QGridLayout(this);
+    vector<Product> products;
+    int departmentNumber = ui->optionCB->currentIndex();
+    int cont = (departmentNumber > 0) ? (departmentNumber-1)*10 : 0;
+    int departmentSize = (departmentNumber > 0) ? departmentNumber*10 : dbArrayObjects.size();
+
+
+    for(int i(cont); i < departmentSize; i++){
+        Product p;
+        QJsonObject x = dbArrayObjects[i].toObject();
+        p.setId(x["id"].toString());
+        p.setName(x["name"].toString());
+        p.setPrice(x["price"].toDouble());
+        products.push_back(p);
+    }
+
+    if(sortNumber == 1){
+        sort(products.begin(), products.end(),[](const Product &a, const Product &b){return a.getPrice() < b.getPrice();});
+    }else if(sortNumber == 2){
+        sort(products.begin(), products.end(),[](const Product &a, const Product &b){return a.getPrice() > b.getPrice();});
+    }
+
+    size_t contador = 0;
+
+    for (size_t i(0);i <= products.size() / 4 ;i++ ) {
+        for(int j(0); j < 4; j++){
+            if(contador >= products.size()) break;
+
+            QLabel *img = new QLabel();
+            QLabel *name = new QLabel();
+            QLabel *price = new QLabel();
+            QWidget *contWidget = new QWidget();
+            //QGridLayout *contTwoGL = new QGridLayout();
+            QVBoxLayout *contTwoGL = new QVBoxLayout();
+            QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+products[contador].getId()+".jpg");
+
+            img->setPixmap(pix.scaled(300,300,Qt::KeepAspectRatio));
+            img->setAlignment(Qt::AlignCenter);
+            name->setText(products[contador].getName());
+            name->setAlignment(Qt::AlignCenter);
+            name->setWordWrap(true);//Si el texto no abarca el ancho, se realiza un salto de linea
+            price->setText("$" + QString::number(products[contador].getPrice()));
+            price->setAlignment(Qt::AlignCenter);
+
+            contTwoGL->addWidget(img,Qt::AlignCenter);
+            contTwoGL->addWidget(name);
+            contTwoGL->addWidget(price);
+            contWidget->setLayout(contTwoGL);
+            contWidget->setStyleSheet("background-color:red;");
+
+            contGL->addWidget(contWidget,i,j);
+            contador++;
+        }
+    }
+    ui->scrollContents->setLayout(contGL);
+}
+
+void ProductWidget::loadObjectsBySearch(QString objectName)
+{
+
+}
+
 void ProductWidget::deleteWidgets()
 {
     if(ui->scrollContents->layout() != NULL){
@@ -145,9 +205,12 @@ void ProductWidget::deleteWidgets()
 
 void ProductWidget::on_optionCB_currentIndexChanged(int index)
 {
-    if (firstActivation){
-        deleteWidgets();
-        loadObjectsByDepartment(index);
-    }
-    firstActivation = true;
+    deleteWidgets();
+    loadObjectsByDepartment(index);
+}
+
+void ProductWidget::on_sortCB_currentIndexChanged(int index)
+{
+    deleteWidgets();
+    loadObjectsBySort(index);
 }

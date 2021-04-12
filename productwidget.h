@@ -12,6 +12,9 @@
 #include <QDebug>
 #include <QWidget>
 #include <QLabel>
+#include <vector>
+
+#include "product.h"
 
 using namespace std;
 
@@ -33,6 +36,8 @@ public:
 private slots:
     void on_optionCB_currentIndexChanged(int index);
 
+    void on_sortCB_currentIndexChanged(int index);
+
 private:
     Ui::ProductWidget *ui;
 
@@ -43,6 +48,8 @@ private:
     void loadAllObjects();
     void loadObjectsDepartament(int departmentNumber);
     void loadObjectsByDepartment(int departmentNumber);
+    void loadObjectsBySort(int sortNumber);
+    void loadObjectsBySearch(QString objectName);
     void deleteWidgets();
 };
 
