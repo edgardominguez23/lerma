@@ -51,90 +51,13 @@ void ProductWidget::loadAllObjects()
     dbArrayObjects = jsonObj["products"].toArray();
 }
 
-void ProductWidget::loadObjectsDepartament(int departmentNumber)
-{
-    QGridLayout *contGL = new QGridLayout(this);
-    int cont = (departmentNumber > 0) ? (departmentNumber-1)*10 : 0;
-    int departmentSize = (departmentNumber > 0) ? departmentNumber*10 : dbArrayObjects.size();
-
-    for (int i = 0;i <= departmentSize / 4 ;i++) {
-        for (int j = 0;j < 4 ; j++) {
-            if(cont >= departmentSize) break;
-
-            QJsonObject obj = dbArrayObjects[cont].toObject();
-
-            QLabel *img = new QLabel();
-            QLabel *name = new QLabel();
-            QLabel *price = new QLabel();
-            QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+obj["id"].toString()+".jpg");
-
-            img->setPixmap(pix.scaled(200,200,Qt::KeepAspectRatio));
-            name->setText(obj["name"].toString());
-            name->setAlignment(Qt::AlignCenter);
-            name->setWordWrap(true);//Si el texto no abarca el ancho, se realiza un salto de linea
-            price->setText("$" + QString::number(obj["price"].toDouble()));
-
-            contGL->addWidget(img,i*4,j,Qt::AlignCenter);
-            contGL->addWidget(name,(i*4)+1,j); //El texto sea del ancho necesario
-            contGL->addWidget(price,(i*4)+2,j,Qt::AlignCenter);
-
-            cont++;
-        }
-    }
-    ui->scrollContents->setLayout(contGL);
-}
-
 void ProductWidget::loadObjectsByDepartment(int departmentNumber)
 {
-    QGridLayout *contGL = new QGridLayout(this);
+    deleteProducts();
     int cont = (departmentNumber > 0) ? (departmentNumber-1)*10 : 0;
     int departmentSize = (departmentNumber > 0) ? departmentNumber*10 : dbArrayObjects.size();
     ui->sortCB->setCurrentIndex(0);
     ui->searchLE->clear();
-
-    for (int i(0);i <= departmentSize / 4 ;i++ ) {
-        for(int j(0); j < 4; j++){
-            if(cont >= departmentSize) break;
-
-            QJsonObject obj = dbArrayObjects[cont].toObject();
-
-            QLabel *img = new QLabel();
-            QLabel *name = new QLabel();
-            QLabel *price = new QLabel();
-            QWidget *contWidget = new QWidget();
-            //QGridLayout *contTwoGL = new QGridLayout();
-            QVBoxLayout *contTwoGL = new QVBoxLayout();
-            QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+obj["id"].toString()+".jpg");
-
-            img->setPixmap(pix.scaled(300,300,Qt::KeepAspectRatio));
-            img->setAlignment(Qt::AlignCenter);
-            name->setText(obj["name"].toString());
-            name->setAlignment(Qt::AlignCenter);
-            name->setWordWrap(true);//Si el texto no abarca el ancho, se realiza un salto de linea
-            price->setText("$" + QString::number(obj["price"].toDouble()));
-            price->setAlignment(Qt::AlignCenter);
-
-            contTwoGL->addWidget(img,Qt::AlignCenter);
-            contTwoGL->addWidget(name);
-            contTwoGL->addWidget(price);
-            contWidget->setLayout(contTwoGL);
-            contWidget->setStyleSheet("background-color:red;");
-
-            contGL->addWidget(contWidget,i,j);
-            cont++;
-        }
-    }
-    ui->scrollContents->setLayout(contGL);
-}
-
-void ProductWidget::loadObjectsBySort(int sortNumber)
-{
-    QGridLayout *contGL = new QGridLayout(this);
-    vector<Product> products;
-    int departmentNumber = ui->optionCB->currentIndex();
-    int cont = (departmentNumber > 0) ? (departmentNumber-1)*10 : 0;
-    int departmentSize = (departmentNumber > 0) ? departmentNumber*10 : dbArrayObjects.size();
-
 
     for(int i(cont); i < departmentSize; i++){
         Product p;
@@ -142,20 +65,79 @@ void ProductWidget::loadObjectsBySort(int sortNumber)
         p.setId(x["id"].toString());
         p.setName(x["name"].toString());
         p.setPrice(x["price"].toDouble());
+
         products.push_back(p);
     }
+    showProducts(products);
+}
+
+void ProductWidget::loadObjectsBySort(vector<Product> &p, int sortNumber)
+{
 
     if(sortNumber == 1){
-        sort(products.begin(), products.end(),[](const Product &a, const Product &b){return a.getPrice() < b.getPrice();});
+        sort(p.begin(), p.end(),[](const Product &a, const Product &b){return a.getPrice() < b.getPrice();});
     }else if(sortNumber == 2){
-        sort(products.begin(), products.end(),[](const Product &a, const Product &b){return a.getPrice() > b.getPrice();});
+        sort(p.begin(), p.end(),[](const Product &a, const Product &b){return a.getPrice() > b.getPrice();});
     }
 
+    (ui->searchLE->text().size()) ? loadObjectsBySearch(p) : showProducts(p);
+    //showProducts(p);
+}
+
+void ProductWidget::loadObjectsBySearch(const vector<Product> &p)
+{
+    int cont = 0;
+    QString text = ui->searchLE->text();
+    QGridLayout *contGL = new QGridLayout(this);
+
+    for(size_t i(0); i < p.size(); i++){
+        if(text.size() <= p[i].getName().size()){
+            if(p[i].getName().contains(text, Qt::CaseInsensitive)){
+
+                QLabel *img = new QLabel();
+                QLabel *name = new QLabel();
+                QLabel *price = new QLabel();
+                QWidget *contWidget = new QWidget();
+                //QGridLayout *contTwoGL = new QGridLayout();
+                QVBoxLayout *contTwoGL = new QVBoxLayout();
+                QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+p[i].getId()+".jpg");
+
+                img->setPixmap(pix.scaled(300,300,Qt::KeepAspectRatio));
+                img->setAlignment(Qt::AlignCenter);
+                name->setText(p[i].getName());
+                name->setAlignment(Qt::AlignCenter);
+                name->setWordWrap(true);//Si el texto no abarca el ancho, se realiza un salto de linea
+                price->setText("$" + QString::number(p[i].getPrice()));
+                price->setAlignment(Qt::AlignCenter);
+
+                contTwoGL->addWidget(img,Qt::AlignCenter);
+                contTwoGL->addWidget(name);
+                contTwoGL->addWidget(price);
+                //contTwoGL->setContentsMargins(0,150,0,250);
+                contWidget->setLayout(contTwoGL);
+                //contWidget->setStyleSheet("background-color:red;");
+
+                int posX = cont / 4, posY = cont % 4;
+                //qDebug() << "posX" << posX << "posY" << posY;
+                contGL->addWidget(contWidget,posX,posY);
+                cont++;
+            }
+        }
+    }
+
+    (cont <= 4) ? contGL->setContentsMargins(0,200,0,250) : contGL->setContentsMargins(0,0,0,0);
+    ui->scrollContents->setLayout(contGL);
+}
+
+void ProductWidget::showProducts(const vector<Product> &p)
+{
+    deleteWidgets();
+    QGridLayout *contGL = new QGridLayout(this);
     size_t contador = 0;
 
-    for (size_t i(0);i <= products.size() / 4 ;i++ ) {
+    for (size_t i(0);i <= p.size() / 4 ;i++ ) {
         for(int j(0); j < 4; j++){
-            if(contador >= products.size()) break;
+            if(contador >= p.size()) break;
 
             QLabel *img = new QLabel();
             QLabel *name = new QLabel();
@@ -163,32 +145,25 @@ void ProductWidget::loadObjectsBySort(int sortNumber)
             QWidget *contWidget = new QWidget();
             //QGridLayout *contTwoGL = new QGridLayout();
             QVBoxLayout *contTwoGL = new QVBoxLayout();
-            QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+products[contador].getId()+".jpg");
+            QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+p[contador].getId()+".jpg");
 
             img->setPixmap(pix.scaled(300,300,Qt::KeepAspectRatio));
             img->setAlignment(Qt::AlignCenter);
-            name->setText(products[contador].getName());
+            name->setText(p[contador].getName());
             name->setAlignment(Qt::AlignCenter);
             name->setWordWrap(true);//Si el texto no abarca el ancho, se realiza un salto de linea
-            price->setText("$" + QString::number(products[contador].getPrice()));
+            price->setText("$" + QString::number(p[contador].getPrice()));
             price->setAlignment(Qt::AlignCenter);
 
             contTwoGL->addWidget(img,Qt::AlignCenter);
             contTwoGL->addWidget(name);
             contTwoGL->addWidget(price);
             contWidget->setLayout(contTwoGL);
-            contWidget->setStyleSheet("background-color:red;");
-
             contGL->addWidget(contWidget,i,j);
             contador++;
         }
     }
     ui->scrollContents->setLayout(contGL);
-}
-
-void ProductWidget::loadObjectsBySearch(QString objectName)
-{
-
 }
 
 void ProductWidget::deleteWidgets()
@@ -203,6 +178,11 @@ void ProductWidget::deleteWidgets()
     }
 }
 
+void ProductWidget::deleteProducts()
+{
+    products.clear();
+}
+
 void ProductWidget::on_optionCB_currentIndexChanged(int index)
 {
     deleteWidgets();
@@ -212,5 +192,12 @@ void ProductWidget::on_optionCB_currentIndexChanged(int index)
 void ProductWidget::on_sortCB_currentIndexChanged(int index)
 {
     deleteWidgets();
-    loadObjectsBySort(index);
+    loadObjectsBySort(products,index);
+}
+
+void ProductWidget::on_searchLE_textEdited(const QString &arg1)
+{
+    Q_UNUSED(arg1);
+    deleteWidgets();
+    loadObjectsBySearch(products);
 }

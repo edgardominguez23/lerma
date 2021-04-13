@@ -38,19 +38,23 @@ private slots:
 
     void on_sortCB_currentIndexChanged(int index);
 
+    void on_searchLE_textEdited(const QString &arg1);
+
 private:
     Ui::ProductWidget *ui;
 
     QFile dbFile;
     QString nameFile;
     QJsonArray dbArrayObjects;
+    vector<Product> products;
 
     void loadAllObjects();
-    void loadObjectsDepartament(int departmentNumber);
     void loadObjectsByDepartment(int departmentNumber);
-    void loadObjectsBySort(int sortNumber);
-    void loadObjectsBySearch(QString objectName);
+    void loadObjectsBySort(vector<Product> &p, int sortNumber);
+    void loadObjectsBySearch(const vector<Product> &p);
+    void showProducts(const vector<Product> &p);
     void deleteWidgets();
+    void deleteProducts();
 };
 
 #endif // PRODUCTWIDGET_H

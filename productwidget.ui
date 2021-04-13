@@ -79,7 +79,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="searchLE"/>
+      <widget class="QLineEdit" name="searchLE">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="placeholderText">
+        <string>Buscar</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
