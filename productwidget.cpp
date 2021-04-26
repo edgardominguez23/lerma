@@ -2,7 +2,11 @@
 #include "ui_productwidget.h"
 #include <QPixmap>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QSpinBox>
 #include <algorithm>
+
+#include <QFrame>
 
 bool firstActivation = false;
 
@@ -98,8 +102,11 @@ void ProductWidget::loadObjectsBySearch(const vector<Product> &p)
                 QLabel *name = new QLabel();
                 QLabel *price = new QLabel();
                 QWidget *contWidget = new QWidget();
-                //QGridLayout *contTwoGL = new QGridLayout();
-                QVBoxLayout *contTwoGL = new QVBoxLayout();
+                QVBoxLayout *contVL = new QVBoxLayout();
+                QVBoxLayout *contTwoVL = new QVBoxLayout();
+                QHBoxLayout *contHL = new QHBoxLayout();
+                QSpinBox *spinBox = new QSpinBox();
+                QPushButton *btnAdd = new QPushButton("Add");
                 QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+p[i].getId()+".jpg");
 
                 img->setPixmap(pix.scaled(300,300,Qt::KeepAspectRatio));
@@ -110,22 +117,38 @@ void ProductWidget::loadObjectsBySearch(const vector<Product> &p)
                 price->setText("$" + QString::number(p[i].getPrice()));
                 price->setAlignment(Qt::AlignCenter);
 
-                contTwoGL->addWidget(img,Qt::AlignCenter);
-                contTwoGL->addWidget(name);
-                contTwoGL->addWidget(price);
-                //contTwoGL->setContentsMargins(0,150,0,250);
-                contWidget->setLayout(contTwoGL);
-                //contWidget->setStyleSheet("background-color:red;");
+                contVL->addWidget(img,Qt::AlignCenter);
+                contVL->addWidget(name);
+                contVL->addWidget(price);
+
+                contTwoVL->addWidget(spinBox);
+                contTwoVL->addWidget(btnAdd);
+
+                contHL->addLayout(contVL,4);
+                contHL->addLayout(contTwoVL,1);
+
+                contWidget->setLayout(contHL);
+                //contWidget->setStyleSheet("background-color:gray");
 
                 int posX = cont / 4, posY = cont % 4;
-                //qDebug() << "posX" << posX << "posY" << posY;
+
                 contGL->addWidget(contWidget,posX,posY);
                 cont++;
             }
         }
     }
-
-    (cont <= 4) ? contGL->setContentsMargins(0,200,0,250) : contGL->setContentsMargins(0,0,0,0);
+    if(cont <= 4){
+        if(cont < 4 && cont > 0){
+            int marginW = ui->scrollArea->width() / 4;
+            int margin = (ui->scrollArea->width() - marginW) / cont;
+            contGL->setContentsMargins(margin * 0.4,200,margin * 0.4,250);
+            contGL->setSpacing(margin * 0.4);
+        }else{
+            contGL->setContentsMargins(0,200,0,250);
+        }
+    }else{
+        contGL->setContentsMargins(0,0,0,0);
+    }
     ui->scrollContents->setLayout(contGL);
 }
 
@@ -143,8 +166,11 @@ void ProductWidget::showProducts(const vector<Product> &p)
             QLabel *name = new QLabel();
             QLabel *price = new QLabel();
             QWidget *contWidget = new QWidget();
-            //QGridLayout *contTwoGL = new QGridLayout();
-            QVBoxLayout *contTwoGL = new QVBoxLayout();
+            QVBoxLayout *contVL = new QVBoxLayout();
+            QVBoxLayout *contTwoVL = new QVBoxLayout();
+            QHBoxLayout *contHL = new QHBoxLayout();
+            QSpinBox *spinBox = new QSpinBox();
+            QPushButton *btnAdd = new QPushButton("Add");
             QPixmap pix("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+p[contador].getId()+".jpg");
 
             img->setPixmap(pix.scaled(300,300,Qt::KeepAspectRatio));
@@ -155,10 +181,17 @@ void ProductWidget::showProducts(const vector<Product> &p)
             price->setText("$" + QString::number(p[contador].getPrice()));
             price->setAlignment(Qt::AlignCenter);
 
-            contTwoGL->addWidget(img,Qt::AlignCenter);
-            contTwoGL->addWidget(name);
-            contTwoGL->addWidget(price);
-            contWidget->setLayout(contTwoGL);
+            contVL->addWidget(img,Qt::AlignCenter);
+            contVL->addWidget(name);
+            contVL->addWidget(price);
+
+            contTwoVL->addWidget(spinBox);
+            contTwoVL->addWidget(btnAdd);
+
+            contHL->addLayout(contVL,4);
+            contHL->addLayout(contTwoVL,1);
+
+            contWidget->setLayout(contHL);
             contGL->addWidget(contWidget,i,j);
             contador++;
         }
