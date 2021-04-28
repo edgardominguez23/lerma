@@ -14,6 +14,7 @@
 #include <QJsonDocument>
 
 #include "productwidget.h"
+#include "product.h"
 
 using namespace std;
 
@@ -46,16 +47,23 @@ private slots:
 
     void openFile();
 
+    void on_departmentCB_currentIndexChanged(int index);
+
+    void on_searchLE_textEdited(const QString &arg1);
+
+    void on_sortingCB_currentIndexChanged(int index);
+
+    void addToChart(QString item, int amount);
+
 private:
     Ui::MainWindow *ui;
 
-    //ProductWidget *uiProducts;
-    ProductWidget *uiProduct;
-
     vector<User> users;
+    vector<Product> products;
+
     QAction* openFileAction;
     QFile dbFile;
-    QJsonArray dbArray, dbArrayObject;
+    QJsonArray dbArray, dbArrayObject, dbArrayAddProducts, dbArrayPurchase;
 
     void enableLoginPB();
     void enableSignInPB();
@@ -64,5 +72,10 @@ private:
     bool validateCredential();
     void saveDB();
     void loadBD();
+    void loadProductsByDepartment(int n);
+    void showProducts(vector<Product> &p);
+    void loadObjectsBySort(vector<Product> &p, int n);
+    void loadObjectsBySearch(const vector<Product> &p);
+    void deleteProducts();
 };
 #endif // MAINWINDOW_H

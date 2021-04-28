@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+    <item row="1" column="0">
      <widget class="QStackedWidget" name="viewSW">
       <property name="currentIndex">
        <number>0</number>
@@ -136,7 +136,97 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="page_2"/>
+      <widget class="QWidget" name="pageTwo">
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="10,10,10">
+          <item>
+           <widget class="QComboBox" name="departmentCB">
+            <item>
+             <property name="text">
+              <string>Todos los Departamentos</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Alimentos y Bebidas</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Libros</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Electronicos</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Hogar y Cocina</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Deporte y Aire Libre</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="sortingCB">
+            <item>
+             <property name="text">
+              <string>Sort...</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Ascedente</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Descendente</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="searchLE">
+            <property name="inputMask">
+             <string/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="placeholderText">
+             <string>Search...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0">
+         <widget class="QScrollArea" name="productsSA">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="productsArea">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>754</width>
+             <height>472</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>

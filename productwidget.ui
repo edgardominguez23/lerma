@@ -13,99 +13,67 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="10,10,10">
-     <property name="spacing">
-      <number>10</number>
-     </property>
-     <property name="leftMargin">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="20,5">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
      <item>
-      <widget class="QComboBox" name="optionCB">
-       <item>
-        <property name="text">
-         <string>Todos los Departamentos</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Alimentos y Bebidas</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Libros</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Electronicos</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Hogar y Cocina</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Deporte y Aire Libre</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="sortCB">
-       <item>
-        <property name="text">
-         <string>Ordenar...</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Ascendente</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Descendente</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="searchLE">
+      <widget class="QLabel" name="imgL">
        <property name="text">
         <string/>
        </property>
-       <property name="placeholderText">
-        <string>Buscar</string>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="nameL">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="priceL">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
-    <widget class="QScrollArea" name="scrollArea">
-     <property name="widgetResizable">
-      <bool>true</bool>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1">
+     <property name="spacing">
+      <number>50</number>
      </property>
-     <widget class="QWidget" name="scrollContents">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>776</width>
-        <height>545</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>30</number>
+     </property>
+     <item>
+      <widget class="QSpinBox" name="amountSB">
+       <property name="frame">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="addPB">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Add</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
