@@ -15,6 +15,7 @@
 
 #include "productwidget.h"
 #include "product.h"
+#include "graph.h"
 
 using namespace std;
 
@@ -64,6 +65,7 @@ private:
     QAction* openFileAction;
     QFile dbFile;
     QJsonArray dbArray, dbArrayObject, dbArrayAddProducts, dbArrayPurchase;
+    Graph<string> graph;
 
     void enableLoginPB();
     void enableSignInPB();
@@ -77,5 +79,6 @@ private:
     void loadObjectsBySort(vector<Product> &p, int n);
     void loadObjectsBySearch(const vector<Product> &p);
     void deleteProducts();
+    void createGraph();
 };
 #endif // MAINWINDOW_H

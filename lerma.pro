@@ -16,6 +16,7 @@ SOURCES += \
     user.cpp
 
 HEADERS += \
+    graph.h \
     mainwindow.h \
     product.h \
     productwidget.h \

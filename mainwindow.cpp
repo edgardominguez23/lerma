@@ -105,15 +105,12 @@ void MainWindow::saveDB()
         qDebug() << dbArrayAddProducts.size();
         for(int i(0); i < dbArray.size(); i++){
             QJsonObject obj = dbArray[i].toObject();
-
-            if(username == obj["name"].toString()){            //dbArray[i].toObject()["name"].toString()){
-                //QDateTime date;
+            if(username == obj["name"].toString()){
                 QTime time = QTime::currentTime();
                 QDateTime date = QDateTime::currentDateTime();
-                dbArrayPurchase =  obj["purchase"].toArray();        //dbArray[i].toObject()["purchase"].toArray();
+                dbArrayPurchase =  obj["purchase"].toArray();
                 jsonAddProductsDate[date.toString("dd/MM/yyyy") + " " + time.toString("hh:mm:ss")] = dbArrayAddProducts;
                 dbArrayPurchase.append(jsonAddProductsDate);
-                //dbArray[i].toObject()["purchase"] = dbArrayPurchase;
 
                 jsonProduct["name"] = obj["name"];
                 jsonProduct["email"] = obj["email"];
@@ -133,7 +130,6 @@ void MainWindow::saveDB()
         jsonObj["users"] = dbArray;
     }
 
-    //jsonObj["users"] = dbArray;
     jsonObj["products"] = dbArrayObject;
     jsonDoc = QJsonDocument(jsonObj);
 
@@ -253,6 +249,21 @@ void MainWindow::deleteProducts()
     }
 }
 
+void MainWindow::createGraph()
+{
+    QJsonArray purchases;
+    for(int i(0); i < dbArray.size(); ++i){
+        QJsonObject obj = dbArray[i].toObject();
+        purchases = obj["purchase"].toArray();
+        for(int j(0); j < purchases.size(); ++i){
+            //QJsonDocument dates = purchases[j].();
+            QString d;
+            //qDebug() << date;
+        }
+    }
+    //graph.printData();
+}
+
 void MainWindow::on_usernameLE_textChanged(const QString &arg1)
 {
     Q_UNUSED(arg1);
@@ -349,6 +360,7 @@ void MainWindow::openFile()
         ui->signInGB->setEnabled(true);
         //nameFile = name;
         loadBD();
+        createGraph();
     }
 }
 
@@ -373,13 +385,6 @@ void MainWindow::on_sortingCB_currentIndexChanged(int index)
 
 void MainWindow::addToChart(QString item, int amount)
 {
-    //qDebug() << "Id: " << item;
-    //qDebug() << "Cantidad: " << amount;
-    //QTime q = QTime::currentTime();
-    //QDateTime qt = QDateTime::currentDateTime();
-    //qDebug() << qt.toString("dd/MM/yyyy");
-    //qDebug() << q.toString("hh: mm : ss");
-    //qDebug() << q.toString()
     QJsonObject jsonOBJ;
     jsonOBJ["id"] = item;
     jsonOBJ["units"] = amount;
