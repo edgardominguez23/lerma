@@ -24,7 +24,7 @@ ProductWidget::~ProductWidget()
 
 void ProductWidget::on_addPB_clicked()
 {
-    qDebug() << "Id secgundo: " << productId;
+    //qDebug() << "Id secgundo: " << productId;
 
     emit addItem(productId,ui->amountSB->value());
     ui->amountSB->setValue(0);

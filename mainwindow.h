@@ -12,10 +12,14 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <iostream>
 
 #include "productwidget.h"
 #include "product.h"
 #include "graph.h"
+
+#include <queue>
+#include <QRandomGenerator>
 
 using namespace std;
 
@@ -60,12 +64,13 @@ private:
     Ui::MainWindow *ui;
 
     vector<User> users;
-    vector<Product> products;
+    vector<Product> products, productsCopia;
 
     QAction* openFileAction;
     QFile dbFile;
     QJsonArray dbArray, dbArrayObject, dbArrayAddProducts, dbArrayPurchase;
     Graph<string> graph;
+    priority_queue<pair<int,string> > priorityProducts;
 
     void enableLoginPB();
     void enableSignInPB();
@@ -79,6 +84,12 @@ private:
     void loadObjectsBySort(vector<Product> &p, int n);
     void loadObjectsBySearch(const vector<Product> &p);
     void deleteProducts();
+    void deleteProductsPriority();
     void createGraph();
+
+    QString generateRandomProduct(int min, int max);
+    ProductWidget* searchProduct(QString id);
+    void showPriorityProducts(QString id);
+    void generateRandomProductInQueue(int n);
 };
 #endif // MAINWINDOW_H

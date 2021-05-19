@@ -137,7 +137,24 @@
        </layout>
       </widget>
       <widget class="QWidget" name="pageTwo">
-       <layout class="QGridLayout" name="gridLayout_5">
+       <layout class="QGridLayout" name="gridLayout_5" rowstretch="1,14,10" rowminimumheight="0,0,0">
+        <item row="1" column="0">
+         <widget class="QScrollArea" name="productsSA">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="productsArea">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>754</width>
+             <height>270</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </item>
         <item row="0" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout" stretch="10,10,10">
           <item>
@@ -208,18 +225,18 @@
           </item>
          </layout>
         </item>
-        <item row="1" column="0">
-         <widget class="QScrollArea" name="productsSA">
+        <item row="2" column="0">
+         <widget class="QScrollArea" name="productsPSA">
           <property name="widgetResizable">
            <bool>true</bool>
           </property>
-          <widget class="QWidget" name="productsArea">
+          <widget class="QWidget" name="productsPriority">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
              <width>754</width>
-             <height>472</height>
+             <height>193</height>
             </rect>
            </property>
           </widget>

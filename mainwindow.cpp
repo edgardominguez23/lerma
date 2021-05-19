@@ -61,6 +61,10 @@ void MainWindow::validateUser()
         username = user;
         ui->viewSW->setCurrentIndex(1);
         loadProductsByDepartment(0);
+
+        productsCopia = products;
+        showPriorityProducts("");
+
         message.exec();
     }
 }
@@ -100,9 +104,9 @@ void MainWindow::saveDB()
     QJsonObject jsonObj, jsonAddProductsDate, jsonProduct;
     QJsonArray objects;
     QJsonDocument jsonDoc;
-    qDebug() << username;
+    //qDebug() << username;
     if(dbArrayAddProducts.size() > 0){
-        qDebug() << dbArrayAddProducts.size();
+        //qDebug() << dbArrayAddProducts.size();
         for(int i(0); i < dbArray.size(); i++){
             QJsonObject obj = dbArray[i].toObject();
             if(username == obj["name"].toString()){
@@ -249,19 +253,164 @@ void MainWindow::deleteProducts()
     }
 }
 
+void MainWindow::deleteProductsPriority()
+{
+    if(ui->productsPriority->layout() != NULL){
+        QLayoutItem* item;
+        while((item = ui->productsPriority->layout()->takeAt(0)) != NULL){
+            delete item->widget();
+            delete item;
+        }
+        delete ui->productsPriority->layout();
+    }
+}
+
 void MainWindow::createGraph()
 {
     QJsonArray purchases;
     for(int i(0); i < dbArray.size(); ++i){
         QJsonObject obj = dbArray[i].toObject();
         purchases = obj["purchase"].toArray();
-        for(int j(0); j < purchases.size(); ++i){
-            //QJsonDocument dates = purchases[j].();
-            QString d;
-            //qDebug() << date;
+
+        if(!purchases.empty()){
+            for(int j(0); j < purchases.size(); j++){
+                QJsonObject datePurchases = purchases[j].toObject();
+                QStringList date = datePurchases.keys();
+                QString key = date[0];
+                QJsonArray buys = datePurchases[key].toArray();
+
+                if(buys.size() > 1){
+                    for(int k(0); k < buys.size()-1; k++){
+                        QJsonObject productOne = buys[k].toObject();
+                        string pOne = productOne["id"].toString().toUtf8().constData();
+                        for(int l(k+1); l < buys.size(); l++){
+                            if(k != l){
+                                QJsonObject productTwo = buys[l].toObject();
+                                string pTwo = productTwo["id"].toString().toUtf8().constData();
+                                if(graph.isEdge(pOne,pTwo)){
+                                    int cost = graph.getCost(pOne,pTwo);
+
+                                    graph.createEdge(pOne,pTwo,cost + 1);
+                                }else{
+                                    graph.createEdge(pOne,pTwo,1);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
-    //graph.printData();
+    graph.printData();
+}
+
+QString MainWindow::generateRandomProduct(int min, int max)
+{
+    uniform_int_distribution<int> distribution(min,max);
+    int x = distribution(*QRandomGenerator::global());
+
+    return products[x].getId();
+}
+
+ProductWidget *MainWindow::searchProduct(QString id) //Busca producto y retorna el productWidget correspondiente
+{
+    auto it = find_if(productsCopia.begin(),productsCopia.end(),[&id](Product p) -> bool{return p.getId() == id;});
+    Product *p = &(*it);
+    return new ProductWidget("C:/Users/Edyal/Documents/seminarioAlgoritmia/Proyecto/lerma/imgs/"+p->getId() + ".jpg",p->getId(),p->getName(),p->getPrice(),ui->productsPSA);
+}
+
+void MainWindow::showPriorityProducts(QString id)
+{
+    queue<pair<int,string> > copia;
+
+    if(!id.size()){
+        QGridLayout *productsGrid = new QGridLayout();
+        generateRandomProductInQueue(5);
+
+        //Llenar la cola copia
+        while(!priorityProducts.empty()){
+            copia.push(make_pair(priorityProducts.top().first,priorityProducts.top().second));
+            priorityProducts.pop();
+        }
+
+        //Llenar la cola de prioridad
+        int cont = 0;
+        while(!copia.empty()){
+            deleteProductsPriority();
+            ProductWidget *product = searchProduct(QString::fromStdString(copia.front().second));
+            connect(product, SIGNAL(addItem(QString, int)), this, SLOT(addToChart(QString, int)));
+            productsGrid->addWidget(product,cont / 5, cont % 5);
+            cont++;
+
+            priorityProducts.push(make_pair(copia.front().first,copia.front().second));
+            copia.pop();
+        }
+        ui->productsPriority->setLayout(productsGrid);
+
+    }else{
+        QGridLayout *productsGrid = new QGridLayout();
+        if(graph.contains(id.toUtf8().constData())){
+            map<string, int> c = graph.getNeighbors(id.toUtf8().constData());
+
+            for (auto it = c.begin(); it != c.end(); it++) {
+                priorityProducts.push(make_pair((*it).second,(*it).first));
+            }
+
+            for (int i(0);i < 5;i++) {
+                if(copia.empty()){
+                    copia.push(make_pair(priorityProducts.top().first,priorityProducts.top().second));
+                    priorityProducts.pop();
+                }
+
+                if(copia.size() == 5) break;
+                string backId2 = copia.front().second;
+                string topId2 = priorityProducts.top().second;
+                int cont = 0;
+                size_t sizeCopia = copia.size();
+                for(size_t j(0); j < sizeCopia; j++){
+                    if(topId2 == backId2){
+                        cont++;
+                    }
+                    copia.push(make_pair(copia.front().first, copia.front().second));
+                    copia.pop();
+                    backId2 = copia.front().second;
+                }
+                if(cont == 0){
+                    copia.push(make_pair(priorityProducts.top().first, priorityProducts.top().second));
+                    priorityProducts.pop();
+                }else{
+                    priorityProducts.pop();
+                }
+            }
+            //Vaciar cola principal
+            while(!priorityProducts.empty()){
+                priorityProducts.pop();
+            }
+
+            //Llenar la cola de prioridad
+            int cont = 0;
+            while(!copia.empty()){
+                deleteProductsPriority();
+                ProductWidget *product = searchProduct(QString::fromStdString(copia.front().second));
+                connect(product, SIGNAL(addItem(QString, int)), this, SLOT(addToChart(QString, int)));
+                productsGrid->addWidget(product,cont / 5, cont % 5);
+                cont++;
+
+                priorityProducts.push(make_pair(copia.front().first,copia.front().second));
+                copia.pop();
+            }
+        }
+        ui->productsPriority->setLayout(productsGrid);
+    }
+}
+
+void MainWindow::generateRandomProductInQueue(int n)
+{
+    for(int i(0); i < n; i++){
+        string randomId = generateRandomProduct(i * 10,((i+1)*10)-1).toUtf8().constData();
+
+        priorityProducts.push(make_pair(0,randomId));
+    }
 }
 
 void MainWindow::on_usernameLE_textChanged(const QString &arg1)
@@ -389,4 +538,6 @@ void MainWindow::addToChart(QString item, int amount)
     jsonOBJ["id"] = item;
     jsonOBJ["units"] = amount;
     dbArrayAddProducts.append(jsonOBJ);
+
+    showPriorityProducts(item);//
 }
