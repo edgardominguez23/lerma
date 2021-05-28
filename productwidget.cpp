@@ -13,7 +13,7 @@ ProductWidget::ProductWidget(QString imageFile, QString id, QString name, double
     ui->nameL->setAlignment(Qt::AlignCenter);
     ui->imgL->setPixmap(pix.scaled(300,300,Qt::KeepAspectRatio));
     ui->imgL->setAlignment(Qt::AlignCenter);
-    ui->priceL->setText(QString::number(price));
+    ui->priceL->setText("$" + QString::number(price));
     ui->priceL->setAlignment(Qt::AlignCenter);
 }
 

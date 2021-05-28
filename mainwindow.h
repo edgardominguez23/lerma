@@ -80,7 +80,12 @@ private:
     void saveDB();
     void loadBD();
     void loadProductsByDepartment(int n);
+
     void showProducts(vector<Product> &p);
+    void showProductsPriority(vector<pair<Product, int> > &p);
+    void loadProductsPriority(QString id);
+    Product searchProductPriority(QString id);
+
     void loadObjectsBySort(vector<Product> &p, int n);
     void loadObjectsBySearch(const vector<Product> &p);
     void deleteProducts();
